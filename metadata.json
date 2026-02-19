@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Nexworth Access",
+  "description": "A digital access card platform reducing the cost of opportunity for young people through curated discounts on transport, skills, and essentials.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
