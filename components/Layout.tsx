@@ -57,7 +57,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, userRole, onLogout }) 
                   to={link.path}
                   className={({ isActive }) => `
                     text-sm font-bold tracking-wide transition-colors flex items-center gap-2
-                    ${isActive ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-900'}
+                    ${isActive && link.path !== '/' ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-900'}
                   `}
                 >
                   {/* Fixed Property 'icon' does not exist error by using typed navLinks */}
@@ -102,7 +102,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, userRole, onLogout }) 
                 to={link.path}
                 className={({ isActive }) => `
                   flex items-center gap-3 text-lg font-bold p-2
-                  ${isActive ? 'text-indigo-600' : 'text-slate-700 hover:text-indigo-600'}
+                  ${isActive && link.path !== '/' ? 'text-indigo-600' : 'text-slate-700 hover:text-indigo-600'}
                 `}
                 onClick={() => setIsMenuOpen(false)}
               >

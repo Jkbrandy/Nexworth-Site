@@ -8,6 +8,8 @@ import { MemberView } from './views/MemberView';
 import { MerchantView } from './views/MerchantView';
 import { AdminView } from './views/AdminView';
 import { ApplyView } from './views/ApplyView';
+import { AboutView } from './views/AboutView';
+import { PricingView } from './views/PricingView';
 import { db } from './services/database';
 import { Settings, RefreshCw, Eye } from 'lucide-react';
 
@@ -34,6 +36,8 @@ const App: React.FC = () => {
       >
         <Routes>
           <Route path="/" element={<LandingView />} />
+          <Route path="/about" element={<AboutView />} />
+          <Route path="/pricing" element={<PricingView />} />
           <Route path="/apply" element={<ApplyView onComplete={refreshState} />} />
           
           <Route path="/app/*" element={
