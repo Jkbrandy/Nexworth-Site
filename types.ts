@@ -24,6 +24,8 @@ export enum OfferCategory {
 
 export interface Profile {
   user_id: string;
+  verification_id?: string;
+  activation_code?: string;
   full_name: string;
   email: string;
   country: string;

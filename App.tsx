@@ -10,6 +10,7 @@ import { AdminView } from './views/AdminView';
 import { ApplyView } from './views/ApplyView';
 import { AboutView } from './views/AboutView';
 import { PricingView } from './views/PricingView';
+import { VerifyView } from './views/VerifyView';
 import { db } from './services/database';
 import { Settings, RefreshCw, Eye } from 'lucide-react';
 
@@ -39,6 +40,7 @@ const App: React.FC = () => {
           <Route path="/about" element={<AboutView />} />
           <Route path="/pricing" element={<PricingView />} />
           <Route path="/apply" element={<ApplyView onComplete={refreshState} />} />
+          <Route path="/verify/:verificationId" element={<VerifyView />} />
           
           <Route path="/app/*" element={
             profile.role === UserRole.MEMBER ? <MemberView profile={profile} /> : <Navigate to="/apply" />

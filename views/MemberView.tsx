@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { MOCK_OFFERS } from '../constants';
 import { Offer, OfferCategory, Profile, ApplicationStatus } from '../types';
-import { Search, QrCode, CreditCard, ExternalLink, Sparkles, Ticket, LayoutGrid, Zap, Globe, Loader2 } from 'lucide-react';
+import { Search, QrCode, CreditCard, ExternalLink, Sparkles, Ticket, LayoutGrid, Zap, Globe, Loader2, Share2 } from 'lucide-react';
 import { getOfferInsights } from '../services/geminiService';
 
 export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
@@ -14,6 +14,9 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
   const location = useLocation();
 
   const categories = ['All', ...Object.values(OfferCategory)];
+
+  // The QR code now encodes the actual verification URL
+  const verificationUrl = `${window.location.origin}/#/verify/${profile.verification_id}`;
 
   const filteredOffers = MOCK_OFFERS.filter(offer => {
     const matchesCategory = selectedCategory === 'All' || offer.category === selectedCategory;
@@ -51,6 +54,9 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
              >
                <QrCode size={18}/> Fast Scan
              </button>
+             <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 shadow-sm transition-all">
+               <Share2 size={18}/>
+             </button>
           </div>
         </header>
 
@@ -71,7 +77,7 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
                             <div className="font-black text-xl tracking-tight">Nexworth Premium</div>
                          </div>
                       </div>
-                      <div className="text-white/40 font-mono text-xs">#NX-2024-8842</div>
+                      <div className="text-white/40 font-mono text-xs">ID: {profile.verification_id}</div>
                    </div>
 
                    <div className="mt-8">
@@ -86,15 +92,15 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
                    <div className="flex justify-between items-end mt-8">
                       <div className="flex gap-8">
                          <div>
-                            <div className="text-[10px] text-white/60 font-bold uppercase tracking-widest mb-1 text-white">Status</div>
+                            <div className="text-[10px] text-white/60 font-bold uppercase tracking-widest mb-1">Status</div>
                             <div className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-lg text-xs font-black text-white border border-white/10 uppercase tracking-widest">Active</div>
                          </div>
                          <div>
-                            <div className="text-[10px] text-white/60 font-bold uppercase tracking-widest mb-1 text-white">Exp Date</div>
+                            <div className="text-[10px] text-white/60 font-bold uppercase tracking-widest mb-1">Exp Date</div>
                             <div className="text-xs font-black text-white">12 / 2025</div>
                          </div>
                       </div>
-                      <div className="w-16 h-16 bg-white p-2 rounded-xl shadow-inner">
+                      <div className="w-20 h-20 bg-white p-2.5 rounded-2xl shadow-inner flex items-center justify-center">
                          <QrCode className="text-slate-900 w-full h-full" />
                       </div>
                    </div>
@@ -102,23 +108,23 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
 
                 {/* Quick Stats / Scanner */}
                 <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between">
-                  <h3 className="text-xl font-black text-slate-900 mb-6">Activity</h3>
+                  <h3 className="text-xl font-black text-slate-900 mb-6 tracking-tight">Access Log</h3>
                   <div className="space-y-4">
                      {[
-                       { title: 'National Rail', date: '2 days ago', amount: '-£14.20' },
-                       { title: 'Adobe CC', date: '1 week ago', amount: '-£22.00' }
+                       { title: 'National Rail', date: '2 days ago', status: 'Verified' },
+                       { title: 'Adobe CC', date: '1 week ago', status: 'Verified' }
                      ].map((item, i) => (
                        <div key={i} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
                          <div>
                            <div className="text-sm font-bold">{item.title}</div>
                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{item.date}</div>
                          </div>
-                         <div className="text-emerald-600 font-black">{item.amount}</div>
+                         <div className="text-emerald-600 font-black text-[10px] uppercase tracking-widest px-2 py-1 bg-emerald-50 rounded-lg">{item.status}</div>
                        </div>
                      ))}
                   </div>
                   <Link to="offers" className="w-full py-4 brand-gradient text-white rounded-2xl font-bold mt-8 shadow-lg hover:shadow-indigo-200 transition-all flex items-center justify-center gap-2">
-                     <Sparkles size={18}/> Explore New Perks
+                     <Sparkles size={18}/> New Perks
                   </Link>
                 </div>
               </div>
@@ -126,7 +132,7 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
               {/* Highlight Offers */}
               <section>
                  <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-black">Featured for You</h2>
+                    <h2 className="text-2xl font-black tracking-tight">Featured for You</h2>
                     <Link to="offers" className="text-indigo-600 font-bold text-sm hover:underline">View All</Link>
                  </div>
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -161,7 +167,7 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-6 py-3 rounded-2xl text-sm font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
                       selectedCategory === cat 
-                        ? 'bg-slate-900 text-white shadow-xl' 
+                        ? 'bg-slate-900 text-white shadow-xl scale-105' 
                         : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
@@ -183,18 +189,22 @@ export const MemberView: React.FC<{ profile: Profile }> = ({ profile }) => {
         {showQR && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
              <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setShowQR(false)}></div>
-             <div className="bg-white w-full max-w-sm rounded-[3rem] p-12 text-center relative z-10 shadow-3xl animate-in zoom-in-95 duration-300">
-                <h3 className="text-2xl font-black mb-2">Ready to Scan</h3>
+             <div className="bg-white w-full max-w-sm rounded-[3.5rem] p-12 text-center relative z-10 shadow-3xl animate-in zoom-in-95 duration-300">
+                <h3 className="text-2xl font-black mb-2 tracking-tight">Secure ID Scan</h3>
                 <p className="text-slate-500 mb-10 font-medium">Show this to the merchant to apply your Nexworth discount.</p>
                 
-                <div className="w-64 h-64 bg-slate-50 border-4 border-slate-100 rounded-[2.5rem] flex items-center justify-center relative overflow-hidden mx-auto mb-10">
+                <div className="w-64 h-64 bg-slate-50 border-4 border-slate-100 rounded-[3rem] flex items-center justify-center relative overflow-hidden mx-auto mb-10">
                   <QrCode size={180} className="text-slate-800" />
                   <div className="absolute inset-x-0 h-1 bg-indigo-500 animate-[bounce_2s_infinite] top-0 opacity-50 shadow-lg shadow-indigo-500"></div>
                 </div>
                 
+                <div className="bg-slate-50 py-3 px-4 rounded-xl text-[10px] font-mono text-slate-400 break-all mb-8">
+                   {verificationUrl}
+                </div>
+                
                 <button 
                   onClick={() => setShowQR(false)}
-                  className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-colors"
+                  className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-colors shadow-lg"
                 >
                   Close Scanner
                 </button>

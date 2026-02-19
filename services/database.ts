@@ -49,7 +49,9 @@ class DatabaseService {
       email: data.email,
       country: data.country,
       status: ApplicationStatus.APPLIED,
-      joined_at: new Date().toISOString()
+      joined_at: new Date().toISOString(),
+      verification_id: Math.random().toString(36).substring(2, 10).toUpperCase(),
+      activation_code: Math.floor(100000 + Math.random() * 900000).toString()
     };
     
     this.db.profile = newProfile;
@@ -63,12 +65,20 @@ class DatabaseService {
       this.db.settings.free_slots_remaining--;
       this.db.profile.membership_paid = true;
     } else {
-      // Logic for actual Stripe checkout would go here
       this.db.profile.membership_paid = true;
     }
-    this.db.profile.status = ApplicationStatus.APPROVED;
+    this.db.profile.status = ApplicationStatus.ACTIVE;
     this.db.profile.role = UserRole.MEMBER;
     this.save();
+  }
+
+  // Simulated public verification check
+  getVerificationStatus(verificationId: string) {
+    // Check main profile or applications list
+    if (this.db.profile.verification_id === verificationId) {
+      return this.db.profile;
+    }
+    return this.db.applications.find(a => a.verification_id === verificationId);
   }
 
   reset() {
